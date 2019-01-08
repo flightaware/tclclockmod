@@ -176,6 +176,7 @@ static const struct ClockCommand clockCommands[] = {
 		ClockGetjuliandayfromerayearmonthdayObjCmd,	NULL, NULL},
     {"GetJulianDayFromEraYearWeekDay",
 		ClockGetjuliandayfromerayearweekdayObjCmd,	NULL, NULL},
+    {"unixtime",	ClockFastScanObjCmd,	NULL, NULL},
     {NULL, NULL, NULL, NULL}
 };
 
@@ -3567,6 +3568,46 @@ done:
 
     return TCL_OK;
 }
+
+/*----------------------------------------------------------------------
+ *
+ * ClockFastScanObjCmd -- , clock unixtime --
+ *
+ *	This function is invoked to process the Tcl "clock unixtime" command.
+ *
+ * "clock unixtime" always operates in UTC, doesn't take any additional args
+ *      and treats an integer input as already being a UNIX time.
+ */
+int
+ClockFastScanObjCmd(
+    ClientData clientData,	/* Client data containing literal pool */
+    Tcl_Interp *interp,		/* Tcl interpreter */
+    int objc,			/* Parameter count */
+    Tcl_Obj *const objv[])	/* Parameter values */
+{
+    static const char *syntax = "clock unixtime string";
+    int ret;
+
+    if(objc < 2) {
+	Tcl_WrongNumArgs(interp, 0, NULL, syntax);
+	Tcl_SetErrorCode(interp, "CLOCK", "wrongNumArgs", NULL);
+	return TCL_ERROR;
+    }
+
+    // Handle special case #1 - already a timestamp
+    if(Tcl_GetLongFromObj(interp, objv[1], &intVal) == TCL_OK) {
+	Tcl_SetObjResult(interp, objv[1]);
+	return TCL_OK;
+    }
+
+    // Handle special case #2 - timezone is a zero length string
+    // TODO
+
+    // Pass to ClockScanObjCmd
+
+    return ClockScanObjCommand(clientData, interp, objc, objv);
+}
+
 
 /*----------------------------------------------------------------------
  *
