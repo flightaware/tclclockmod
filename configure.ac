@@ -128,8 +128,8 @@ TEA_ADD_SOURCES([generic/tclClock.c           \
 #])
 
 #TEA_ADD_STUB_SOURCES([])
-
-TEA_ADD_TCL_SOURCES([lib/clock.tcl.in])
+AC_OUTPUT([lib/clock.tcl])
+TEA_ADD_TCL_SOURCES([lib/clock.tcl])
 
 #--------------------------------------------------------------------
 # Add --with-tzpath flag to set zoneinfo directory
@@ -232,4 +232,4 @@ TEA_PROG_TCLSH
 # which require substituting th AC variables in.  Include these here.
 #--------------------------------------------------------------------
 
-AC_OUTPUT([Makefile pkgIndex.tcl lib/clock.tcl])
+AC_OUTPUT([Makefile pkgIndex.tcl])
