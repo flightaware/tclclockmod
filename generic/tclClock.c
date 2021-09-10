@@ -493,6 +493,9 @@ NormTimezoneObj(
 	}
 	return dataPtr->literals[LIT_GMT];
     }
+    if (strcmp(tz, Literals[LIT_LOCALTIME]) == 0) {
+	return dataPtr->literals[LIT_LOCALTIME];
+    }
     /* unknown/unloaded tz - recache/revalidate later as last-setup if needed */
     *loaded = 0;
     return timezoneObj;
@@ -3481,8 +3484,7 @@ baseNow:
 	 * base time.
 	 */
 	if ( oldTZEpoch != dataPtr->lastTZEpoch
-	  && opts->timezoneObj->length == dataPtr->literals[LIT_LOCALTIME]->length
-	  && !memcmp(opts->timezoneObj->bytes, dataPtr->literals[LIT_LOCALTIME]->bytes, opts->timezoneObj->length)
+	  && opts->timezoneObj == dataPtr->literals[LIT_LOCALTIME]
 	) {
 	    canUseLastBase = 0;
 	}
