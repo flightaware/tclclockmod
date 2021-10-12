@@ -38,7 +38,9 @@ jobs:
           ../configure --with-tcl=/usr/lib/tcl8.6
 
       - name: make	
-        run: make
+        run: |
+          cd unix
+          make
           
       - name: test
         run: |
@@ -48,7 +50,9 @@ jobs:
           tclsh tests/all.tcl
           
       - name: install
-        run: sudo make install
+        run: |
+          cd unix
+          sudo make install
 
       - name: test
         run: |
