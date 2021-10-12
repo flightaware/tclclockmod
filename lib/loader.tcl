@@ -35,7 +35,7 @@ proc ::clock args {
 
 
   # first try from the lib directory (like installed):
-  set stubs [glob -nocomplain [file join $::tcl::clock::LibDir clock.tcl]
+  set stubs [glob -nocomplain [file join $::tcl::clock::LibDir clock.tcl]]
   # second try find stubd in the same directory as the shared library.
   if {![llength $stubs]} {
     set stubs [glob -nocomplain [file join [file dirname [lindex $lib 0]] clock.tcl]]
