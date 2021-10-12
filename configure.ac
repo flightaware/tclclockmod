@@ -129,7 +129,16 @@ TEA_ADD_SOURCES([generic/tclClock.c           \
 
 #TEA_ADD_STUB_SOURCES([])
 
-TEA_ADD_TCL_SOURCES([lib/clock.tcl.in])
+
+# HACKHACK: We cannot use TEA_ADD_TCL_SOURCES() for lib/clock.tcl
+# because that file hasn't yet been generated from lib/clock.tcl.in,
+# so we manually update the PKG_TCL_SOURCES variable instead.
+
+PKG_TCL_SOURCES="$PKG_TCL_SOURCES lib/clock.tcl"
+AC_SUBST(PKG_TCL_SOURCES)
+
+
+
 
 #--------------------------------------------------------------------
 # Add --with-tzpath flag to set zoneinfo directory
