@@ -35,13 +35,13 @@ proc ::clock args {
 
 
   # first try from the lib directory (like installed):
-  set stubs [glob -nocomplain [file join $::tcl::clock::LibDir clock.tcl]]
-  # second try find stubd in the same directory as the shared library.
+  # second try to find stubs in the same directory as the shared library.
+  set stubs [glob -nocomplain [file join $::tcl::clock::LibDir clock.tcl] \
+                 [file join [file dirname [lindex $lib 0]] clock.tcl] \
+                 [file join [file dirname [lindex $lib 0]] lib/clock.tcl] \
+                ]
   if {![llength $stubs]} {
-    set stubs [glob -nocomplain [file join [file dirname [lindex $lib 0]] clock.tcl]]
-    if {![llength $stubs]} {
-      error "tclclockmod stubs file not found relative \"[pwd]\"."
-    }
+    error "tclclockmod stubs file not found relative \"[pwd]\"."
   }
 
   # overload new tcl-clock stubs:
