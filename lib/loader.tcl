@@ -36,16 +36,16 @@ proc ::clock args {
 
   # first try from the lib directory (like installed):
   # second try to find in the same directory as the shared library.
-  set stubs [glob -nocomplain [file join $::tcl::clock::LibDir clock.tcl] \
+  set ensemble [glob -nocomplain [file join $::tcl::clock::LibDir clock.tcl] \
                  [file join [file dirname [lindex $lib 0]] clock.tcl] \
                  [file join [file dirname [lindex $lib 0]] lib/clock.tcl] \
                 ]
-  if {![llength $stubs]} {
+  if {![llength $ensemble]} {
     error "tclclockmod ensemble file not found relative \"[pwd]\"."
   }
 
   # overload new tcl-clock ensemble file:
-  source [lindex $stubs 0]
+  source [lindex $ensemble 0]
 
   # and ensemble:
   set cmdmap [dict create]
