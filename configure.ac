@@ -17,7 +17,7 @@ dnl	to configure the system for the local environment.
 # so you can encode the package version directly into the source files.
 #-----------------------------------------------------------------------
 
-AC_INIT([tclclockmod], [8.6.710])
+AC_INIT([tclclockmod],[9.0])
 
 #--------------------------------------------------------------------
 # Call TEA_INIT as the first TEA_ macro to set up initial vars.
@@ -36,13 +36,16 @@ AC_CONFIG_AUX_DIR(tclconfig)
 TEA_PATH_TCLCONFIG
 TEA_LOAD_TCLCONFIG
 
-if test "${TCL_MAJOR_VERSION}" -ne 8 ; then
-    AC_MSG_ERROR([${PACKAGE_NAME} ${PACKAGE_VERSION} requires Tcl 8.6+
+if test "${TCL_MAJOR_VERSION}" -eq 8 ; then
+    if test "${TCL_MINOR_VERSION}" -lt 6 ; then
+        AC_MSG_ERROR([${PACKAGE_NAME} ${PACKAGE_VERSION} requires Tcl 8.6+
+    Found config for Tcl ${TCL_VERSION}])
+    fi
+else
+    if test "${TCL_MAJOR_VERSION}" -ne 9 ; then
+        AC_MSG_ERROR([${PACKAGE_NAME} ${PACKAGE_VERSION} requires Tcl 8.6+
 Found config for Tcl ${TCL_VERSION}])
-fi
-if test "${TCL_MINOR_VERSION}" -lt 6 ; then
-    AC_MSG_ERROR([${PACKAGE_NAME} ${PACKAGE_VERSION} requires Tcl 8.6+
-Found config for Tcl ${TCL_VERSION}])
+    fi
 fi
 
 #--------------------------------------------------------------------
@@ -232,4 +235,5 @@ TEA_PROG_TCLSH
 # which require substituting th AC variables in.  Include these here.
 #--------------------------------------------------------------------
 
-AC_OUTPUT([Makefile pkgIndex.tcl lib/clock.tcl])
+AC_CONFIG_FILES([Makefile pkgIndex.tcl lib/clock.tcl])
+AC_OUTPUT
