@@ -76,8 +76,7 @@ void _InitModTclInternals(Tcl_Interp *interp) {
  */
 
 DLLEXPORT int
-Tclclockmod_Init(interp)
-    Tcl_Interp *interp; /* The current Tcl interpreter */
+Tclclockmod_Init(Tcl_Interp *interp)
 {
     static int initialized = 0;
 
