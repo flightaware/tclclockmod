@@ -79,7 +79,13 @@ int Tcl_CatchObjCmd(ClientData dummy, Tcl_Interp *interp,
 
 /* Currently no external declaration for tclStringHashKeyType */
 
-static size_t
+#if TCL_MAJOR_VERSION >= 9
+#define HASHKEYRETURNTYPE size_t
+#else
+#define HASHKEYRETURNTYPE unsigned
+#endif
+
+static HASHKEYRETURNTYPE
 HashStringKey(
     Tcl_HashTable *tablePtr,	/* Hash table. */
     void *keyPtr)		/* Key from which to compute hash value. */
