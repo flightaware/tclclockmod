@@ -400,6 +400,10 @@ StrIdxTreeObj_FreeIntRepProc(Tcl_Obj *objPtr)
     objPtr->typePtr = NULL;
 };
 
+#if TCL_MAJOR_VERSION == 9
+static char *tclEmptyStringRep = &tclEmptyString;
+#endif
+
 static void
 StrIdxTreeObj_UpdateStringProc(Tcl_Obj *objPtr)
 {
