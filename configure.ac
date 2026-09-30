@@ -128,6 +128,8 @@ TEA_ADD_SOURCES([generic/tclClock.c           \
 #TEA_ADD_HEADERS([generic/tclDate.h            \
 #                 generic/tclStrIdxTree.h      \
 #                 generic/tclClockModInt.h     \
+#                 generic/tclUtfInt.h     \
+#                 generic/tclSize.h     \
 #])
 
 #TEA_ADD_STUB_SOURCES([])

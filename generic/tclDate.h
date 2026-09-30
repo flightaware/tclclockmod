@@ -15,6 +15,7 @@
 
 /* Internals compatibilities (tclInt.h) - remove after merge to core */
 #include "tclClockModInt.h"
+#include "tclUtfInt.h"
 #if !TCL_AVAIL_SBMOD
 MODULE_SCOPE Tcl_Obj * Tcl_DictObjSmartRef(Tcl_Interp *interp, Tcl_Obj *dictPtr);
 #ifdef TclListObjGetElements

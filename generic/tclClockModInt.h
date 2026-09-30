@@ -22,17 +22,6 @@
 #endif
 
 /*
- * several tclInt.h internals (tcl8.6 version depending):
- */
-
-#if TCL_MAJOR_VERSION < 9
-#ifndef TclUtfNext
-#define TclUtfNext(src)	\
-	( (((unsigned char) *(src)) < 0xC0) ? src + 1 : Tcl_UtfNext(src) )
-#endif
-#endif
-
-/*
  * Signal using modified tcl version (dict smartref's, etc.)
  */
 
