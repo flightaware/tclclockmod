@@ -13,6 +13,9 @@
 #include "tclInt.h"
 #include "tclStrIdxTree.h"
 #include "tclDate.h"
+#include "tclSize.h"
+
+#define TclOffset offsetof
 
 /*
  * Miscellaneous forward declarations and functions used within this file
