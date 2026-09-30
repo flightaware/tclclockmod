@@ -82,7 +82,7 @@ Tclclockmod_Init(interp)
     static int initialized = 0;
 
     if (!initialized) {
-	if (Tcl_InitStubs(interp, "8.6", 0) == NULL) {
+	if (Tcl_InitStubs(interp, "8.6+", 0) == NULL) {
 	    return TCL_ERROR;
 	}
 	_InitModTclInternals(interp);
