@@ -12,7 +12,7 @@
 
 #include "tclClockModInt.h"
 #include "tclInt.h"
-#include "TclUtfInt.h"
+#include "tclUtfInt.h"
 
 CompileProc *_TclCompileBasicMin0ArgCmd;
 CompileProc *_TclCompileBasicMin1ArgCmd;

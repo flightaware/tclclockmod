@@ -12,7 +12,7 @@
 
 #include "tclClockModInt.h"
 #include "tcl.h"
-#include "TclUtfInt.h"
+#include "tclUtfInt.h"
 
 const Tcl_ObjType* tclIntTypePtr;
 const Tcl_ObjType* tclWideIntTypePtr;
