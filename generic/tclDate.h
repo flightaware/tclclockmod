@@ -225,7 +225,7 @@ typedef struct TclDateFields {
 } TclDateFields;
 
 #define ClockCacheableDateFieldsSize \
-    TclOffset(TclDateFields, tzName)
+    offsetof(TclDateFields, tzName)
 
 /*
  * Structure contains return parsed fields.

@@ -17,6 +17,7 @@
 #include "tclInt.h"
 #include "tclStrIdxTree.h"
 #include "tclDate.h"
+#include "tclSize.h"
 
 /*
  * Windows has mktime. The configurators do not check.
@@ -1899,7 +1900,7 @@ ConvertLocalToUTC(
 {
     ClockClientData *dataPtr = clientData;
     Tcl_Obj *tzdata;		/* Time zone data */
-    int rowc;			/* Number of rows in tzdata */
+    Tcl_Size rowc;			/* Number of rows in tzdata */
     Tcl_Obj **rowv;		/* Pointers to the rows */
     Tcl_WideInt seconds;
     ClockLastTZOffs * ltzoc = NULL;
@@ -2040,7 +2041,7 @@ ConvertLocalToUTCUsingTable(
     Tcl_WideInt *rangesVal)	/* Return bounds for time period */
 {
     Tcl_Obj *row;
-    int cellc;
+    Tcl_Size cellc;
     Tcl_Obj **cellv;
     struct {
 	Tcl_Obj *tzName;
@@ -2195,7 +2196,7 @@ ConvertUTCToLocal(
 {
     ClockClientData *dataPtr = clientData;
     Tcl_Obj *tzdata;		/* Time zone data */
-    int rowc;			/* Number of rows in tzdata */
+    Tcl_Size rowc;			/* Number of rows in tzdata */
     Tcl_Obj **rowv;		/* Pointers to the rows */
     ClockLastTZOffs * ltzoc = NULL;
 
@@ -2327,7 +2328,7 @@ ConvertUTCToLocalUsingTable(
     Tcl_WideInt *rangesVal)	/* Return bounds for time period */
 {
     Tcl_Obj *row;		/* Row containing the current information */
-    int cellc;			/* Count of cells in the row (must be 4) */
+    Tcl_Size cellc;			/* Count of cells in the row (must be 4) */
     Tcl_Obj **cellv;		/* Pointers to the cells */
 
     /*
@@ -3671,7 +3672,7 @@ ClockScanObjCmd(
 
     /* set CLC_UNX_ARGS for ::tcl::clock::unixtime command. */
     if (1) {
-	const char *c; int len;
+	const char *c; Tcl_Size len;
 	c = Tcl_GetStringFromObj(objv[0], &len);
 	if (len > 18 && c[14] == 'u') { paflags |= CLC_UNX_ARGS; };
     }
