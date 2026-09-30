@@ -13,6 +13,7 @@
 #include "tclInt.h"
 #include "tclStrIdxTree.h"
 #include "tclDate.h"
+#include "tclSize.h"
 
 /*
  * Miscellaneous forward declarations and functions used within this file
@@ -609,9 +610,7 @@ Tcl_ObjType ClockFmtObjType = {
     (*((Tcl_Obj **)&(objPtr)->internalRep.twoPtrValue.ptr2))
 
 static void
-ClockFmtObj_DupInternalRep(srcPtr, copyPtr)
-    Tcl_Obj *srcPtr;
-    Tcl_Obj *copyPtr;
+ClockFmtObj_DupInternalRep(Tcl_Obj *srcPtr, Tcl_Obj *copyPtr)
 {
     ClockFmtScnStorage *fss = ObjClockFmtScn(srcPtr);
 
@@ -640,8 +639,7 @@ ClockFmtObj_DupInternalRep(srcPtr, copyPtr)
 }
 
 static void
-ClockFmtObj_FreeInternalRep(objPtr)
-    Tcl_Obj *objPtr;
+ClockFmtObj_FreeInternalRep(Tcl_Obj *objPtr)
 {
     ClockFmtScnStorage *fss = ObjClockFmtScn(objPtr);
     if (fss != NULL && initialized) {
@@ -668,9 +666,7 @@ ClockFmtObj_FreeInternalRep(objPtr)
 };
 
 static int
-ClockFmtObj_SetFromAny(interp, objPtr)
-    Tcl_Interp *interp;
-    Tcl_Obj    *objPtr;
+ClockFmtObj_SetFromAny(Tcl_Interp *interp, Tcl_Obj *objPtr)
 {
     /* validate string representation before free old internal represenation */
     (void)TclGetString(objPtr);
@@ -688,8 +684,7 @@ ClockFmtObj_SetFromAny(interp, objPtr)
 };
 
 static void
-ClockFmtObj_UpdateString(objPtr)
-    Tcl_Obj  *objPtr;
+ClockFmtObj_UpdateString(Tcl_Obj  *objPtr)
 {
     const char *name = "UNKNOWN";
     int	  len;
@@ -1257,7 +1252,7 @@ ClockMCGetListIdxTree(
 	/* build new index */
 
 	Tcl_Obj **lstv;
-	int	  lstc;
+	Tcl_Size  lstc;
 	Tcl_Obj *valObj;
 
 	objPtr = TclStrIdxTreeNewObj();
@@ -1330,7 +1325,7 @@ ClockMCGetMultiListIdxTree(
 	/* build new index */
 
 	Tcl_Obj **lstv;
-	int	  lstc;
+	Tcl_Size  lstc;
 	Tcl_Obj *valObj;
 
 	objPtr = TclStrIdxTreeNewObj();
@@ -1914,49 +1909,49 @@ static const char *ScnSTokenMapIndex =
     "dmbyYHMSpJjCgGVazUsntQ";
 static ClockScanTokenMap ScnSTokenMap[] = {
     /* %d %e */
-    {CTOKT_INT, CLF_DAYOFMONTH, 0, 1, 2, TclOffset(DateInfo, date.dayOfMonth),
+    {CTOKT_INT, CLF_DAYOFMONTH, 0, 1, 2, offsetof(DateInfo, date.dayOfMonth),
 	NULL},
     /* %m %N */
-    {CTOKT_INT, CLF_MONTH, 0, 1, 2, TclOffset(DateInfo, date.month),
+    {CTOKT_INT, CLF_MONTH, 0, 1, 2, offsetof(DateInfo, date.month),
 	NULL},
     /* %b %B %h */
     {CTOKT_PARSER, CLF_MONTH, 0, 0, 0xffff, 0,
 	    ClockScnToken_Month_Proc, NULL},
     /* %y */
-    {CTOKT_INT, CLF_YEAR, 0, 1, 2, TclOffset(DateInfo, date.year),
+    {CTOKT_INT, CLF_YEAR, 0, 1, 2, offsetof(DateInfo, date.year),
 	NULL},
     /* %Y */
-    {CTOKT_INT, CLF_YEAR | CLF_CENTURY, 0, 4, 4, TclOffset(DateInfo, date.year),
+    {CTOKT_INT, CLF_YEAR | CLF_CENTURY, 0, 4, 4, offsetof(DateInfo, date.year),
 	NULL},
     /* %H %k %I %l */
-    {CTOKT_INT, CLF_TIME, 0, 1, 2, TclOffset(DateInfo, date.hour),
+    {CTOKT_INT, CLF_TIME, 0, 1, 2, offsetof(DateInfo, date.hour),
 	NULL},
     /* %M */
-    {CTOKT_INT, CLF_TIME, 0, 1, 2, TclOffset(DateInfo, date.minutes),
+    {CTOKT_INT, CLF_TIME, 0, 1, 2, offsetof(DateInfo, date.minutes),
 	NULL},
     /* %S */
-    {CTOKT_INT, CLF_TIME, 0, 1, 2, TclOffset(DateInfo, date.secondOfMin),
+    {CTOKT_INT, CLF_TIME, 0, 1, 2, offsetof(DateInfo, date.secondOfMin),
 	NULL},
     /* %p %P */
     {CTOKT_PARSER, 0, 0, 0, 0xffff, 0,
 	ClockScnToken_amPmInd_Proc, NULL},
     /* %J */
-    {CTOKT_WIDE, CLF_JULIANDAY | CLF_SIGNED, 0, 1, 0xffff, TclOffset(DateInfo, date.julianDay),
+    {CTOKT_WIDE, CLF_JULIANDAY | CLF_SIGNED, 0, 1, 0xffff, offsetof(DateInfo, date.julianDay),
 	NULL},
     /* %j */
-    {CTOKT_INT, CLF_DAYOFYEAR, 0, 1, 3, TclOffset(DateInfo, date.dayOfYear),
+    {CTOKT_INT, CLF_DAYOFYEAR, 0, 1, 3, offsetof(DateInfo, date.dayOfYear),
 	NULL},
     /* %C */
-    {CTOKT_INT, CLF_CENTURY|CLF_ISO8601CENTURY, 0, 1, 2, TclOffset(DateInfo, dateCentury),
+    {CTOKT_INT, CLF_CENTURY|CLF_ISO8601CENTURY, 0, 1, 2, offsetof(DateInfo, dateCentury),
 	NULL},
     /* %g */
-    {CTOKT_INT, CLF_ISO8601YEAR, 0, 2, 2, TclOffset(DateInfo, date.iso8601Year),
+    {CTOKT_INT, CLF_ISO8601YEAR, 0, 2, 2, offsetof(DateInfo, date.iso8601Year),
 	NULL},
     /* %G */
-    {CTOKT_INT, CLF_ISO8601YEAR | CLF_ISO8601CENTURY, 0, 4, 4, TclOffset(DateInfo, date.iso8601Year),
+    {CTOKT_INT, CLF_ISO8601YEAR | CLF_ISO8601CENTURY, 0, 4, 4, offsetof(DateInfo, date.iso8601Year),
 	NULL},
     /* %V */
-    {CTOKT_INT, CLF_ISO8601WEAK, 0, 1, 2, TclOffset(DateInfo, date.iso8601Week),
+    {CTOKT_INT, CLF_ISO8601WEAK, 0, 1, 2, offsetof(DateInfo, date.iso8601Week),
 	NULL},
     /* %a %A %u %w */
     {CTOKT_PARSER, CLF_DAYOFWEEK, 0, 0, 0xffff, 0,
@@ -1968,7 +1963,7 @@ static ClockScanTokenMap ScnSTokenMap[] = {
     {CTOKT_INT, CLF_OPTIONAL, 0, 1, 2, 0, /* currently no capture, parse only token */
 	NULL},
     /* %s */
-    {CTOKT_WIDE, CLF_POSIXSEC | CLF_SIGNED, 0, 1, 0xffff, TclOffset(DateInfo, date.seconds),
+    {CTOKT_WIDE, CLF_POSIXSEC | CLF_SIGNED, 0, 1, 0xffff, offsetof(DateInfo, date.seconds),
 	NULL},
     /* %n */
     {CTOKT_CHAR, 0, 0, 1, 1, 0, NULL, "\n"},
@@ -1987,7 +1982,7 @@ static const char *ScnETokenMapIndex =
     "EJjys";
 static ClockScanTokenMap ScnETokenMap[] = {
     /* %EE */
-    {CTOKT_PARSER, 0, 0, 0, 0xffff, TclOffset(DateInfo, date.year),
+    {CTOKT_PARSER, 0, 0, 0, 0xffff, offsetof(DateInfo, date.year),
 	ClockScnToken_LocaleERA_Proc, (void *)MCLIT_LOCALE_NUMERALS},
     /* %EJ */
     {CTOKT_PARSER, CLF_JULIANDAY | CLF_SIGNED, 0, 1, 0xffff, 0, /* calendar JDN starts at midnight */
@@ -1999,7 +1994,7 @@ static ClockScanTokenMap ScnETokenMap[] = {
     {CTOKT_PARSER, 0, 0, 0, 0xffff, 0, /* currently no capture, parse only token */
 	ClockScnToken_LocaleListMatcher_Proc, (void *)MCLIT_LOCALE_NUMERALS},
     /* %Es */
-    {CTOKT_WIDE, CLF_LOCALSEC | CLF_SIGNED, 0, 1, 0xffff, TclOffset(DateInfo, date.localSeconds),
+    {CTOKT_WIDE, CLF_LOCALSEC | CLF_SIGNED, 0, 1, 0xffff, offsetof(DateInfo, date.localSeconds),
 	NULL},
 };
 static const char *ScnETokenMapAliasIndex[2] = {
@@ -2011,22 +2006,22 @@ static const char *ScnOTokenMapIndex =
     "dmyHMSu";
 static ClockScanTokenMap ScnOTokenMap[] = {
     /* %Od %Oe */
-    {CTOKT_PARSER, CLF_DAYOFMONTH, 0, 0, 0xffff, TclOffset(DateInfo, date.dayOfMonth),
+    {CTOKT_PARSER, CLF_DAYOFMONTH, 0, 0, 0xffff, offsetof(DateInfo, date.dayOfMonth),
 	ClockScnToken_LocaleListMatcher_Proc, (void *)MCLIT_LOCALE_NUMERALS},
     /* %Om */
-    {CTOKT_PARSER, CLF_MONTH, 0, 0, 0xffff, TclOffset(DateInfo, date.month),
+    {CTOKT_PARSER, CLF_MONTH, 0, 0, 0xffff, offsetof(DateInfo, date.month),
 	ClockScnToken_LocaleListMatcher_Proc, (void *)MCLIT_LOCALE_NUMERALS},
     /* %Oy */
-    {CTOKT_PARSER, CLF_YEAR, 0, 0, 0xffff, TclOffset(DateInfo, date.year),
+    {CTOKT_PARSER, CLF_YEAR, 0, 0, 0xffff, offsetof(DateInfo, date.year),
 	ClockScnToken_LocaleListMatcher_Proc, (void *)MCLIT_LOCALE_NUMERALS},
     /* %OH %Ok %OI %Ol */
-    {CTOKT_PARSER, CLF_TIME, 0, 0, 0xffff, TclOffset(DateInfo, date.hour),
+    {CTOKT_PARSER, CLF_TIME, 0, 0, 0xffff, offsetof(DateInfo, date.hour),
 	ClockScnToken_LocaleListMatcher_Proc, (void *)MCLIT_LOCALE_NUMERALS},
     /* %OM */
-    {CTOKT_PARSER, CLF_TIME, 0, 0, 0xffff, TclOffset(DateInfo, date.minutes),
+    {CTOKT_PARSER, CLF_TIME, 0, 0, 0xffff, offsetof(DateInfo, date.minutes),
 	ClockScnToken_LocaleListMatcher_Proc, (void *)MCLIT_LOCALE_NUMERALS},
     /* %OS */
-    {CTOKT_PARSER, CLF_TIME, 0, 0, 0xffff, TclOffset(DateInfo, date.secondOfMin),
+    {CTOKT_PARSER, CLF_TIME, 0, 0, 0xffff, offsetof(DateInfo, date.secondOfMin),
 	ClockScnToken_LocaleListMatcher_Proc, (void *)MCLIT_LOCALE_NUMERALS},
     /* %Ou Ow */
     {CTOKT_PARSER, CLF_DAYOFWEEK, 0, 0, 0xffff, 0,
@@ -2927,7 +2922,7 @@ ClockFmtToken_LocaleERAYear_Proc(
     ClockFormatToken *tok,
     int *val)
 {
-    int rowc;
+    Tcl_Size rowc;
     Tcl_Obj **rowv;
 
     if (dateFmt->localeEra == NULL) {
@@ -3009,70 +3004,70 @@ static const char *FmtSTokenMapIndex =
     "demNbByYCHMSIklpaAuwUVzgGjJsntQ";
 static ClockFormatTokenMap FmtSTokenMap[] = {
     /* %d */
-    {CTOKT_INT, "0", 2, 0, 0, 0, TclOffset(DateFormat, date.dayOfMonth), NULL},
+    {CTOKT_INT, "0", 2, 0, 0, 0, offsetof(DateFormat, date.dayOfMonth), NULL},
     /* %e */
-    {CTOKT_INT, " ", 2, 0, 0, 0, TclOffset(DateFormat, date.dayOfMonth), NULL},
+    {CTOKT_INT, " ", 2, 0, 0, 0, offsetof(DateFormat, date.dayOfMonth), NULL},
     /* %m */
-    {CTOKT_INT, "0", 2, 0, 0, 0, TclOffset(DateFormat, date.month), NULL},
+    {CTOKT_INT, "0", 2, 0, 0, 0, offsetof(DateFormat, date.month), NULL},
     /* %N */
-    {CTOKT_INT, " ", 2, 0, 0, 0, TclOffset(DateFormat, date.month), NULL},
+    {CTOKT_INT, " ", 2, 0, 0, 0, offsetof(DateFormat, date.month), NULL},
     /* %b %h */
-    {CTOKT_INT, NULL, 0, CLFMT_LOCALE_INDX | CLFMT_DECR, 0, 12, TclOffset(DateFormat, date.month),
+    {CTOKT_INT, NULL, 0, CLFMT_LOCALE_INDX | CLFMT_DECR, 0, 12, offsetof(DateFormat, date.month),
 	NULL, (void *)MCLIT_MONTHS_ABBREV},
     /* %B */
-    {CTOKT_INT, NULL, 0, CLFMT_LOCALE_INDX | CLFMT_DECR, 0, 12, TclOffset(DateFormat, date.month),
+    {CTOKT_INT, NULL, 0, CLFMT_LOCALE_INDX | CLFMT_DECR, 0, 12, offsetof(DateFormat, date.month),
 	NULL, (void *)MCLIT_MONTHS_FULL},
     /* %y */
-    {CTOKT_INT, "0", 2, 0, 0, 100, TclOffset(DateFormat, date.year), NULL},
+    {CTOKT_INT, "0", 2, 0, 0, 100, offsetof(DateFormat, date.year), NULL},
     /* %Y */
-    {CTOKT_INT, "0", 4, 0, 0, 0, TclOffset(DateFormat, date.year), NULL},
+    {CTOKT_INT, "0", 4, 0, 0, 0, offsetof(DateFormat, date.year), NULL},
     /* %C */
-    {CTOKT_INT, "0", 2, 0, 100, 0, TclOffset(DateFormat, date.year), NULL},
+    {CTOKT_INT, "0", 2, 0, 100, 0, offsetof(DateFormat, date.year), NULL},
     /* %H */
-    {CTOKT_INT, "0", 2, 0, 3600, 24, TclOffset(DateFormat, date.secondOfDay), NULL},
+    {CTOKT_INT, "0", 2, 0, 3600, 24, offsetof(DateFormat, date.secondOfDay), NULL},
     /* %M */
-    {CTOKT_INT, "0", 2, 0, 60, 60, TclOffset(DateFormat, date.secondOfDay), NULL},
+    {CTOKT_INT, "0", 2, 0, 60, 60, offsetof(DateFormat, date.secondOfDay), NULL},
     /* %S */
-    {CTOKT_INT, "0", 2, 0, 0, 60, TclOffset(DateFormat, date.secondOfDay), NULL},
+    {CTOKT_INT, "0", 2, 0, 0, 60, offsetof(DateFormat, date.secondOfDay), NULL},
     /* %I */
-    {CTOKT_INT, "0", 2, CLFMT_CALC, 0, 0, TclOffset(DateFormat, date.secondOfDay),
+    {CTOKT_INT, "0", 2, CLFMT_CALC, 0, 0, offsetof(DateFormat, date.secondOfDay),
 	ClockFmtToken_HourAMPM_Proc, NULL},
     /* %k */
-    {CTOKT_INT, " ", 2, 0, 3600, 24, TclOffset(DateFormat, date.secondOfDay), NULL},
+    {CTOKT_INT, " ", 2, 0, 3600, 24, offsetof(DateFormat, date.secondOfDay), NULL},
     /* %l */
-    {CTOKT_INT, " ", 2, CLFMT_CALC, 0, 0, TclOffset(DateFormat, date.secondOfDay),
+    {CTOKT_INT, " ", 2, CLFMT_CALC, 0, 0, offsetof(DateFormat, date.secondOfDay),
 	ClockFmtToken_HourAMPM_Proc, NULL},
     /* %p %P */
-    {CTOKT_INT, NULL, 0, 0, 0, 0, TclOffset(DateFormat, date.secondOfDay),
+    {CTOKT_INT, NULL, 0, 0, 0, 0, offsetof(DateFormat, date.secondOfDay),
 	ClockFmtToken_AMPM_Proc, NULL},
     /* %a */
-    {CTOKT_INT, NULL, 0, CLFMT_LOCALE_INDX, 0, 7, TclOffset(DateFormat, date.dayOfWeek),
+    {CTOKT_INT, NULL, 0, CLFMT_LOCALE_INDX, 0, 7, offsetof(DateFormat, date.dayOfWeek),
 	NULL, (void *)MCLIT_DAYS_OF_WEEK_ABBREV},
     /* %A */
-    {CTOKT_INT, NULL, 0, CLFMT_LOCALE_INDX, 0, 7, TclOffset(DateFormat, date.dayOfWeek),
+    {CTOKT_INT, NULL, 0, CLFMT_LOCALE_INDX, 0, 7, offsetof(DateFormat, date.dayOfWeek),
 	NULL, (void *)MCLIT_DAYS_OF_WEEK_FULL},
     /* %u */
-    {CTOKT_INT, " ", 1, 0, 0, 0, TclOffset(DateFormat, date.dayOfWeek), NULL},
+    {CTOKT_INT, " ", 1, 0, 0, 0, offsetof(DateFormat, date.dayOfWeek), NULL},
     /* %w */
-    {CTOKT_INT, " ", 1, 0, 0, 7, TclOffset(DateFormat, date.dayOfWeek), NULL},
+    {CTOKT_INT, " ", 1, 0, 0, 7, offsetof(DateFormat, date.dayOfWeek), NULL},
     /* %U %W */
-    {CTOKT_INT, "0", 2, CLFMT_CALC, 0, 0, TclOffset(DateFormat, date.dayOfYear),
+    {CTOKT_INT, "0", 2, CLFMT_CALC, 0, 0, offsetof(DateFormat, date.dayOfYear),
 	ClockFmtToken_WeekOfYear_Proc, NULL},
     /* %V */
-    {CTOKT_INT, "0", 2, 0, 0, 0, TclOffset(DateFormat, date.iso8601Week), NULL},
+    {CTOKT_INT, "0", 2, 0, 0, 0, offsetof(DateFormat, date.iso8601Week), NULL},
     /* %z %Z */
     {CFMTT_PROC, NULL, 0, 0, 0, 0, 0,
 	ClockFmtToken_TimeZone_Proc, NULL},
     /* %g */
-    {CTOKT_INT, "0", 2, 0, 0, 100, TclOffset(DateFormat, date.iso8601Year), NULL},
+    {CTOKT_INT, "0", 2, 0, 0, 100, offsetof(DateFormat, date.iso8601Year), NULL},
     /* %G */
-    {CTOKT_INT, "0", 4, 0, 0, 0, TclOffset(DateFormat, date.iso8601Year), NULL},
+    {CTOKT_INT, "0", 4, 0, 0, 0, offsetof(DateFormat, date.iso8601Year), NULL},
     /* %j */
-    {CTOKT_INT, "0", 3, 0, 0, 0, TclOffset(DateFormat, date.dayOfYear), NULL},
+    {CTOKT_INT, "0", 3, 0, 0, 0, offsetof(DateFormat, date.dayOfYear), NULL},
     /* %J */
-    {CTOKT_WIDE, "0", 7, 0, 0, 0, TclOffset(DateFormat, date.julianDay), NULL},
+    {CTOKT_WIDE, "0", 7, 0, 0, 0, offsetof(DateFormat, date.julianDay), NULL},
     /* %s */
-    {CTOKT_WIDE, "0", 1, 0, 0, 0, TclOffset(DateFormat, date.seconds), NULL},
+    {CTOKT_WIDE, "0", 1, 0, 0, 0, offsetof(DateFormat, date.seconds), NULL},
     /* %n */
     {CTOKT_CHAR, "\n", 0, 0, 0, 0, 0, NULL},
     /* %t */
@@ -3099,10 +3094,10 @@ static ClockFormatTokenMap FmtETokenMap[] = {
     {CFMTT_PROC, NULL, 0, 0, 0, 0, (SECONDS_PER_DAY/2), /* astro JDN starts at noon */
 	ClockFmtToken_JDN_Proc, NULL},
     /* %Ey %EC */
-    {CTOKT_INT, NULL, 0, 0, 0, 0, TclOffset(DateFormat, date.year),
+    {CTOKT_INT, NULL, 0, 0, 0, 0, offsetof(DateFormat, date.year),
 	ClockFmtToken_LocaleERAYear_Proc, NULL},
     /* %Es */
-    {CTOKT_WIDE, "0", 1, 0, 0, 0, TclOffset(DateFormat, date.localSeconds), NULL},
+    {CTOKT_WIDE, "0", 1, 0, 0, 0, offsetof(DateFormat, date.localSeconds), NULL},
 };
 static const char *FmtETokenMapAliasIndex[2] = {
     "C",
@@ -3113,31 +3108,31 @@ static const char *FmtOTokenMapIndex =
     "dmyHIMSuw";
 static ClockFormatTokenMap FmtOTokenMap[] = {
     /* %Od %Oe */
-    {CTOKT_INT, NULL, 0, CLFMT_LOCALE_INDX, 0, 100, TclOffset(DateFormat, date.dayOfMonth),
+    {CTOKT_INT, NULL, 0, CLFMT_LOCALE_INDX, 0, 100, offsetof(DateFormat, date.dayOfMonth),
 	NULL, (void *)MCLIT_LOCALE_NUMERALS},
     /* %Om */
-    {CTOKT_INT, NULL, 0, CLFMT_LOCALE_INDX, 0, 100, TclOffset(DateFormat, date.month),
+    {CTOKT_INT, NULL, 0, CLFMT_LOCALE_INDX, 0, 100, offsetof(DateFormat, date.month),
 	NULL, (void *)MCLIT_LOCALE_NUMERALS},
     /* %Oy */
-    {CTOKT_INT, NULL, 0, CLFMT_LOCALE_INDX, 0, 100, TclOffset(DateFormat, date.year),
+    {CTOKT_INT, NULL, 0, CLFMT_LOCALE_INDX, 0, 100, offsetof(DateFormat, date.year),
 	NULL, (void *)MCLIT_LOCALE_NUMERALS},
     /* %OH %Ok */
-    {CTOKT_INT, NULL, 0, CLFMT_LOCALE_INDX, 3600, 24, TclOffset(DateFormat, date.secondOfDay),
+    {CTOKT_INT, NULL, 0, CLFMT_LOCALE_INDX, 3600, 24, offsetof(DateFormat, date.secondOfDay),
 	NULL, (void *)MCLIT_LOCALE_NUMERALS},
     /* %OI %Ol */
-    {CTOKT_INT, NULL, 0, CLFMT_CALC | CLFMT_LOCALE_INDX, 0, 0, TclOffset(DateFormat, date.secondOfDay),
+    {CTOKT_INT, NULL, 0, CLFMT_CALC | CLFMT_LOCALE_INDX, 0, 0, offsetof(DateFormat, date.secondOfDay),
 	ClockFmtToken_HourAMPM_Proc, (void *)MCLIT_LOCALE_NUMERALS},
     /* %OM */
-    {CTOKT_INT, NULL, 0, CLFMT_LOCALE_INDX, 60, 60, TclOffset(DateFormat, date.secondOfDay),
+    {CTOKT_INT, NULL, 0, CLFMT_LOCALE_INDX, 60, 60, offsetof(DateFormat, date.secondOfDay),
 	NULL, (void *)MCLIT_LOCALE_NUMERALS},
     /* %OS */
-    {CTOKT_INT, NULL, 0, CLFMT_LOCALE_INDX, 0, 60, TclOffset(DateFormat, date.secondOfDay),
+    {CTOKT_INT, NULL, 0, CLFMT_LOCALE_INDX, 0, 60, offsetof(DateFormat, date.secondOfDay),
 	NULL, (void *)MCLIT_LOCALE_NUMERALS},
     /* %Ou */
-    {CTOKT_INT, NULL, 0, CLFMT_LOCALE_INDX, 0, 100, TclOffset(DateFormat, date.dayOfWeek),
+    {CTOKT_INT, NULL, 0, CLFMT_LOCALE_INDX, 0, 100, offsetof(DateFormat, date.dayOfWeek),
 	NULL, (void *)MCLIT_LOCALE_NUMERALS},
     /* %Ow */
-    {CTOKT_INT, NULL, 0, CLFMT_LOCALE_INDX, 0, 7, TclOffset(DateFormat, date.dayOfWeek),
+    {CTOKT_INT, NULL, 0, CLFMT_LOCALE_INDX, 0, 7, offsetof(DateFormat, date.dayOfWeek),
 	NULL, (void *)MCLIT_LOCALE_NUMERALS},
 };
 static const char *FmtOTokenMapAliasIndex[2] = {

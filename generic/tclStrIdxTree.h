@@ -14,6 +14,7 @@
 #define _TCLSTRIDXTREE_H
 
 #include "tclClockModInt.h"
+#include "tclUtfInt.h"
 
 /*
  * Main structures declarations of index tree and entry

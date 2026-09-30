@@ -12,6 +12,7 @@
 
 #include "tclClockModInt.h"
 #include "tcl.h"
+#include "tclUtfInt.h"
 
 const Tcl_ObjType* tclIntTypePtr;
 const Tcl_ObjType* tclWideIntTypePtr;
@@ -76,13 +77,12 @@ void _InitModTclInternals(Tcl_Interp *interp) {
  */
 
 DLLEXPORT int
-Tclclockmod_Init(interp)
-    Tcl_Interp *interp; /* The current Tcl interpreter */
+Tclclockmod_Init(Tcl_Interp *interp)
 {
     static int initialized = 0;
 
     if (!initialized) {
-	if (Tcl_InitStubs(interp, "8.6", 0) == NULL) {
+	if (Tcl_InitStubs(interp, "8.6-", 0) == NULL) {
 	    return TCL_ERROR;
 	}
 	_InitModTclInternals(interp);

@@ -12,6 +12,7 @@
 
 #include "tclClockModInt.h"
 #include "tclInt.h"
+#include "tclUtfInt.h"
 
 CompileProc *_TclCompileBasicMin0ArgCmd;
 CompileProc *_TclCompileBasicMin1ArgCmd;
@@ -78,7 +79,13 @@ int Tcl_CatchObjCmd(ClientData dummy, Tcl_Interp *interp,
 
 /* Currently no external declaration for tclStringHashKeyType */
 
-static unsigned
+#if TCL_MAJOR_VERSION >= 9
+#define HASHKEYRETURNTYPE size_t
+#else
+#define HASHKEYRETURNTYPE unsigned
+#endif
+
+static HASHKEYRETURNTYPE
 HashStringKey(
     Tcl_HashTable *tablePtr,	/* Hash table. */
     void *keyPtr)		/* Key from which to compute hash value. */
